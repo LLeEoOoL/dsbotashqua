@@ -184,3 +184,14 @@ ssh ИМЯ_ПОЛЬЗОВАТЕЛЯ_WINDOWS@192.168.1.9 "powershell -NoProfile -
 Иди по порядку: сначала проверь маршрут и доступность Windows без VPN, затем установи SSH, проверь подключение с Mac и только после этого включай VPN обратно.
 
 Когда закончишь, напиши мне, **на каком этапе остановился и что показали команды**. По результатам продолжим с нужного места — без повторения всей настройки.
+
+
+
+PS C:\Windows\system32> New-NetFirewallRule -Name OpenSSH-Server-In-TCP -DisplayName "OpenSSH Server" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+New-NetFirewallRule : Невозможно создать файл, так как он уже существует.
+строка:1 знак:1
++ New-NetFirewallRule -Name OpenSSH-Server-In-TCP -DisplayName "OpenSSH ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ResourceExists: (MSFT_NetFirewallRule:root/standardcimv2/MSFT_NetFirewallRule) [New-NetF
+   irewallRule], CimException
+    + FullyQualifiedErrorId : Windows System Error 183,New-NetFirewallRule
