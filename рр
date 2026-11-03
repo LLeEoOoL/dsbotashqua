@@ -293,3 +293,49 @@ netstat -rn -f inet | grep -E 'default|192\.168'
 **Важно:** пока не добавляй статические маршруты, не меняй IP-адреса и не отключай брандмауэр.
 
 Пришли мне результаты трёх команд с Mac и трёх с Windows. После этого сможем выбрать правильное решение и настроить постоянную работу SSH с включённым VPN.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Name      : OpenSSH-Server-In-TCP
+Enabled   : True
+Direction : Inbound
+Action    : Allow
+Profile   : Any
+
+
+
+PS C:\Windows\system32> Get-Service sshd
+
+Status   Name               DisplayName
+------   ----               -----------
+Running  sshd               OpenSSH SSH Server
+
+
+PS C:\Windows\system32> Get-NetTCPConnection -LocalPort 22 -State Listen -ErrorAction SilentlyContinue
+
+LocalAddress                        LocalPort RemoteAddress                       RemotePort State       AppliedSetting
+------------                        --------- -------------                       ---------- -----       --------------
+::                                  22        ::                                  0          Listen
+0.0.0.0                             22        0.0.0.0                             0          Listen
+
+
+PS C:\Windows\system32>
+
