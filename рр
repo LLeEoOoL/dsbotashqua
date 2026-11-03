@@ -345,4 +345,29 @@ LocalAddress                        LocalPort RemoteAddress                     
  Get-LocalUser | Select-Object Name,Enabled,PrincipalSource
 
 PS C:\Windows\system32>
+\
 
+
+
+
+PS C:\Windows\system32> $env:userprofile
+C:\Users\Рома
+PS C:\Windows\system32> $env:username
+Рома
+PS C:\Windows\system32> whoami /upn
+Ошибка. Не удается получить имя субъекта-пользователя (UPN), так как текущий
+        вошедший пользователь не является пользователем домена.
+PS C:\Windows\system32>  Get-LocalUser | Select-Object Name,Enabled,PrincipalSource
+>>
+
+Name               Enabled PrincipalSource
+----               ------- ---------------
+DefaultAccount       False           Local
+WDAGUtilityAccount   False           Local
+Администратор        False           Local
+Гость                False           Local
+кпа                   True           Local
+Рома                  True           Local
+
+
+PS C:\Windows\system32>
