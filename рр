@@ -337,5 +337,12 @@ LocalAddress                        LocalPort RemoteAddress                     
 0.0.0.0                             22        0.0.0.0                             0          Listen
 
 
+
+
+
+
+
+ Get-LocalUser | Select-Object Name,Enabled,PrincipalSource
+
 PS C:\Windows\system32>
 
