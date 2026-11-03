@@ -195,3 +195,101 @@ New-NetFirewallRule : Невозможно создать файл, так ка�
     + CategoryInfo          : ResourceExists: (MSFT_NetFirewallRule:root/standardcimv2/MSFT_NetFirewallRule) [New-NetF
    irewallRule], CimException
     + FullyQualifiedErrorId : Windows System Error 183,New-NetFirewallRule
+
+
+
+
+
+
+
+
+
+Отлично, мы продвинулись. Здесь две разные ситуации, и ни одна пока не означает, что SSH установлен неправильно.
+
+### 1. Ошибка Windows — правило брандмауэра уже существует
+
+Сообщение:
+
+```text
+Невозможно создать файл, так как он уже существует.
+```
+
+означает, что правило `OpenSSH-Server-In-TCP` уже создано. Повторно создавать его не нужно.
+
+В PowerShell Windows выполни:
+
+```powershell
+Get-NetFirewallRule -Name OpenSSH-Server-In-TCP | Format-List Name,Enabled,Direction,Action,Profile
+```
+
+И затем:
+
+```powershell
+Get-Service sshd
+```
+
+И ещё:
+
+```powershell
+Get-NetTCPConnection -LocalPort 22 -State Listen -ErrorAction SilentlyContinue
+```
+
+Нас интересует:
+- включено ли правило брандмауэра;
+- запущена ли служба `sshd`;
+- слушает ли Windows порт 22.
+
+### 2. Ошибка Mac — Network is unreachable
+
+Вот это сейчас главная проблема:
+
+```text
+nc: connectx to 192.168.1.9 port 22 failed: Network is unreachable
+```
+
+Mac вообще не может определить доступный маршрут до Windows.
+
+У нас уже есть важные данные:
+
+| Устройство | IP |
+|---|---|
+| MacBook | `192.168.0.180` |
+| Windows | `192.168.1.9` |
+| Шлюз Windows | `192.168.1.1` |
+
+Устройства находятся в разных подсетях. Кроме того, ранее маршрут Mac шёл через VPN `utun11`.
+
+Нам нужно настроить постоянный доступ к домашней сети, не отключая VPN при каждом подключении.
+
+На Mac выполни:
+
+```bash
+route -n get 192.168.1.9
+```
+
+Затем:
+
+```bash
+route -n get default
+```
+
+И:
+
+```bash
+netstat -rn -f inet | grep -E 'default|192\.168'
+```
+
+### 3. Что будем делать дальше
+
+В зависимости от результатов:
+
+| Результат | Решение |
+|---|---|
+| Маршрут через `utun` | Настроим исключение локальной сети в VPN |
+| Маршрут через `en0`, но подключения нет | Проверим маршрутизацию между подсетями |
+| Windows не слушает порт 22 | Исправим работу SSH |
+| Брандмауэр блокирует соединение | Проверим существующее правило |
+
+**Важно:** пока не добавляй статические маршруты, не меняй IP-адреса и не отключай брандмауэр.
+
+Пришли мне результаты трёх команд с Mac и трёх с Windows. После этого сможем выбрать правильное решение и настроить постоянную работу SSH с включённым VPN.
